@@ -1,0 +1,52 @@
+.header {
+  border-bottom: 1px solid #d9d9d9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 8px 8px 16px;
+}
+
+.body {
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+
+  .messagesWrap {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    overflow: hidden auto;
+    padding: 16px;
+
+    .message {
+      width: fit-content;
+      max-width: 80%;
+      background-color: #d9d9d9;
+      border-radius: 8px;
+      padding: 4px 16px;
+    }
+
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: #d9d9d9;
+    }
+  }
+}
+
+.footer {
+  border-top: 1px solid #d9d9d9;
+  padding: 16px 32px;
+}
+
+:global {
+
+  .ant-modal-content {
+    padding: 0 !important;
+  }
+}
