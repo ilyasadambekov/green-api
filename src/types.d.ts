@@ -36,6 +36,7 @@ interface InstanceData {
 }
 
 interface IMessage {
+  id: number;
   sender: string;
   text: string;
 }

@@ -52,13 +52,28 @@ const sendMessage = async (phone: string, message: string) => {
 
 const ChatModal: FC<IProps> = ({ phone, open, onCancel }) => {
   const [messages, setMessages] = useState<IMessage[]>([]);
-  console.log(messages);
   const [message, setMessage] = useState('');
   const messagesWrapRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     setMessages([]);
   }, [phone]);
+
+  useEffect(() => {
+    const clearMessagesQueue = async () => {
+      if (!UserStore.credentials) return;
+
+      try {
+        await axios.get(
+          `https://api.green-api.com/waInstance${UserStore.credentials.idInstance}/clearMessagesQueue/${UserStore.credentials.apiTokenInstance}`
+        );
+      } catch (error) {
+        console.error('Error clearing queue:', error);
+      }
+    };
+
+    clearMessagesQueue();
+  }, []);
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -69,11 +84,17 @@ const ChatModal: FC<IProps> = ({ phone, open, onCancel }) => {
       if (messagesData) {
         if (messagesData.body.senderData && messagesData.body.messageData.textMessageData) {
           const newMessage = {
+            id: messagesData.receiptId,
             sender: messagesData.body.senderData.sender,
             text: messagesData.body.messageData.textMessageData.textMessage,
           };
 
-          setMessages((prev) => [...prev, newMessage]);
+          setMessages((prev) => {
+            if (!prev.some((msg) => msg.id === newMessage.id)) {
+              return [...prev, newMessage];
+            }
+            return prev;
+          });
         }
 
         await axios.delete(
@@ -99,8 +120,8 @@ const ChatModal: FC<IProps> = ({ phone, open, onCancel }) => {
     if (!phone || !message) return;
 
     try {
-      await sendMessage(phone, message);
-      setMessages((prev) => [...prev, { sender: 'me', text: message }]);
+      await sendMessage(phone.replace(/\D/g, ''), message);
+      setMessages((prev) => [...prev, { id: Date.now(), sender: 'me', text: message }]);
       setMessage('');
     } catch {
       console.error('Failed to send message');
@@ -116,9 +137,9 @@ const ChatModal: FC<IProps> = ({ phone, open, onCancel }) => {
 
       <div className={styles.body}>
         <div className={styles.messagesWrap} ref={messagesWrapRef}>
-          {messages.map((msg, index) => (
+          {messages.map((msg) => (
             <div
-              key={index}
+              key={msg.id}
               className={styles.message}
               style={{ alignSelf: msg.sender === 'me' ? 'end' : 'start' }}
             >

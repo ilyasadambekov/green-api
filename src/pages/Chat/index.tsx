@@ -44,11 +44,7 @@ const ChatPage = () => {
         </Form>
       </div>
 
-      <ChatModal
-        phone={phone.replace(/\D/g, '')}
-        open={modalOpen}
-        onCancel={() => setModalOpen(false)}
-      />
+      <ChatModal phone={phone} open={modalOpen} onCancel={() => setModalOpen(false)} />
     </>
   );
 };
