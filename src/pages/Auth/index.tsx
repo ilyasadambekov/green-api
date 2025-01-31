@@ -9,7 +9,7 @@ const AuthPage = () => {
 
   const onFinish: FormProps<ICredentials>['onFinish'] = (values) => {
     UserStore.setCredentials(values);
-    navigate('/create');
+    navigate('/chat');
   };
 
   return (

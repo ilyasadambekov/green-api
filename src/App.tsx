@@ -16,7 +16,7 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<AuthPage />} />
-      <Route path="/create" element={<ChatPage />} />
+      <Route path="/chat" element={<ChatPage />} />
       <Route path="*" element={<AuthPage />} />
     </Routes>
   );
